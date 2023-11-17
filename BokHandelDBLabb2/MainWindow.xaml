@@ -1,0 +1,47 @@
+﻿<Window x:Class="BokHandelDBLabb2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BokHandelDBLabb2"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Background="#FF53E881">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="SELECT THE STORE TO SEE INVENTORY" Grid.Column="2" Grid.ColumnSpan="4" Grid.Row="1" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Bahnschrift Condensed" FontSize="25"/>
+        <ListBox x:Name="AllStoresListBox" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="4" Height="200">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding StoreName}" FontWeight="Bold"/>
+                        <TextBlock Text=", Adress: "/>
+                        <TextBlock Text="{Binding Adress}" FontStyle="Italic" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+            <Button x:Name="StoreInventoryButton" Grid.Row="3" Grid.Column="5" Content="Show Inventory" FontWeight="Bold" Height="50" FontSize="14" Background="White" Click="StoreInventoryButton_Click" />
+    </Grid>
+</Window>
