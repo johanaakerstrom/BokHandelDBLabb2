@@ -34,7 +34,7 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="CurrenStoreNameText" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="1" HorizontalAlignment="Center" FontSize="30" FontFamily="Britannic Bold"/>
+        <TextBlock x:Name="CurrenStoreNameText" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="1" HorizontalAlignment="Left" FontSize="30" FontFamily="Britannic Bold"/>
         <ListBox x:Name="CurrentStoreInventoryListBox" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="2" Height="200">
             <ListBox.ItemTemplate>
                 <DataTemplate>

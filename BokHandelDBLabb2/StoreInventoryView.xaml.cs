@@ -25,6 +25,7 @@ namespace BokHandelDBLabb2
         BokHandelDBContext dBContext;
         public Store CurrenStore { get; set; }
         Store CurrentStore;
+        
         public Book Book { get; set; }
         public StoreInventoryView(Store data)
         {
@@ -33,6 +34,7 @@ namespace BokHandelDBLabb2
             dBContext = new BokHandelDBContext();
             ShowStoreName();
             LoadStoreInventory();
+            
         }
 
         public async Task LoadStoreInventory()
@@ -41,6 +43,7 @@ namespace BokHandelDBLabb2
             CurrentStoreInventoryListBox.ItemsSource = StoreInventory;
             var allBooks = await dBContext.Books.Include(b => b.Authors).ToListAsync();
             AllBooksListBox.ItemsSource = allBooks;
+            
         }
 
         public void ShowStoreName()
@@ -75,8 +78,10 @@ namespace BokHandelDBLabb2
                 }
                 else
                 {
+                    
                     existingInventory.Quantity++;
                     dBContext.SaveChanges();
+                    LoadStoreInventory();
                 }
             }
                 
@@ -97,6 +102,7 @@ namespace BokHandelDBLabb2
                 else 
                 {
                     bookToRemove.Quantity--;
+                    dBContext.SaveChanges();
                 }
             }
         }
