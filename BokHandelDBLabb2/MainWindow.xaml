@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BokHandelDBLabb2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="#FF53E881">
+        Title="MainWindow" Height="450" Width="800" Background="#FF63F997">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>

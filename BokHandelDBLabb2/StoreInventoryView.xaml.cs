@@ -38,9 +38,10 @@ namespace BokHandelDBLabb2
         }
 
         public async Task LoadStoreInventory()
-        {       
-            var StoreInventory = await dBContext.Books.Include(b => b.InventoryBalances).Where(b => b.InventoryBalances.Any(i => i.StoreId == CurrenStore.StoreId)).ToListAsync();
-            CurrentStoreInventoryListBox.ItemsSource = StoreInventory;
+        {
+            //var StoreInventory = await dBContext.Books.Include(b => b.InventoryBalances).Where(b => b.InventoryBalances.Any(i => i.StoreId == CurrenStore.StoreId)).ToListAsync();
+            var storeInventory = await dBContext.Books.Where(b => b.InventoryBalances.Any(i => i.StoreId == CurrenStore.StoreId)).Include(b => b.InventoryBalances.Where(i => i.StoreId == CurrenStore.StoreId)).ToListAsync(); // Include only the relevant InventoryBalances.ToListAsync();
+            CurrentStoreInventoryListBox.ItemsSource = storeInventory;
             var allBooks = await dBContext.Books.Include(b => b.Authors).ToListAsync();
             AllBooksListBox.ItemsSource = allBooks;
             
@@ -63,28 +64,34 @@ namespace BokHandelDBLabb2
             var addNewBook = AllBooksListBox.SelectedItem as Book;
             if (addNewBook != null)
             {
-                var existingInventory = dBContext.InventoryBalances.FirstOrDefault(i => i.Isbn == addNewBook.Isbn && i.StoreId == CurrenStore.StoreId);
-                if(existingInventory == null)
+                // Check if the book already exists in the inventory of the current store
+                var existingInventory = dBContext.InventoryBalances
+                    .FirstOrDefault(i => i.Isbn == addNewBook.Isbn && i.StoreId == CurrenStore.StoreId);
+
+                if (existingInventory == null)
                 {
-                    var newInventoryBalance = new InventoryBalance()
+                    // If the book is not found in the current store, add a new entry
+                    var newInventoryBalance = new InventoryBalance
                     {
                         Isbn = addNewBook.Isbn,
                         StoreId = CurrenStore.StoreId,
-                        Quantity = 1
+                        Quantity = 1 // Starting with a quantity of 1
                     };
                     dBContext.InventoryBalances.Add(newInventoryBalance);
-                    dBContext.SaveChanges();
-                    LoadStoreInventory();
                 }
                 else
                 {
-                    
+                    // If the book exists, just update the quantity
                     existingInventory.Quantity++;
-                    dBContext.SaveChanges();
-                    LoadStoreInventory();
                 }
+
+                // Save the changes to the database
+                dBContext.SaveChanges();
+
+                // Reload the store inventory to reflect the changes
+                LoadStoreInventory();
             }
-                
+
         }
 
         private void DeleteBookFromStore_Click(object sender, RoutedEventArgs e)
@@ -95,15 +102,28 @@ namespace BokHandelDBLabb2
                 var bookToRemove = dBContext.InventoryBalances.FirstOrDefault(b => b.Isbn == removeBook.Isbn);
                 if (bookToRemove != null)
                 {
-                    dBContext.InventoryBalances.Remove(bookToRemove);
+                    if (bookToRemove.Quantity > 1)
+                    {
+                        bookToRemove.Quantity--;
+                    }
+                    else
+                    {
+                        dBContext.InventoryBalances.Remove(bookToRemove);
+                    }
                     dBContext.SaveChanges();
                     LoadStoreInventory();
                 }
-                else 
-                {
-                    bookToRemove.Quantity--;
-                    dBContext.SaveChanges();
-                }
+            }
+        }
+
+        private void AddANewBookButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(this.CurrenStore != null)
+            {
+                AddANewBookView BookInformation = new AddANewBookView(CurrenStore);
+                BookInformation.CurrentStore = this.CurrentStore;
+                BookInformation.Show();
+                this.Close();
             }
         }
     }
