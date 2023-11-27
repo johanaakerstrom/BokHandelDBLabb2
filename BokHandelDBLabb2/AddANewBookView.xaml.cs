@@ -24,11 +24,13 @@ namespace BokHandelDBLabb2
     {
         public BokHandelDBContext DBConText {  get; set; }
         public Store CurrentStore { get; set; }
+        public List<Author> AuthorList  { get; set; } = new List<Author>();
         public AddANewBookView(Store currentStore)
         {
             InitializeComponent();
             DBConText = new BokHandelDBContext();
             CurrentStore = currentStore;
+            AuthorList = DBConText.Authors.ToList();
             LoadAllStores();
         }
 
@@ -42,24 +44,29 @@ namespace BokHandelDBLabb2
             CurrentStore = SelectedStoreListBox.SelectedItem as Store;
         }
 
-        private async Task AddBookButton_Click(object sender, RoutedEventArgs e)
+        private void AddBookButton_Click(object sender, RoutedEventArgs e)
         {
-            if(CurrentStore != null)
+
+            AddANewBook();
+        }
+
+        private async Task AddANewBook() 
+        {
+            if (CurrentStore != null)
             {
-                string Author = AuthorText.Text = string.Empty;
-                string Title = TitleText.Text = string.Empty;
-                int Price;
-                if (int.TryParse(PriceText.Text, out Price))
-                {
-                    MessageBox.Show("Invalid Price");
-                }
-                string Language = LanguageText.Text = string.Empty;
-                string ISBN = ISBNText.Text = string.Empty;
+                string AuthorFirstName = FirstNameAuthorText.Text;
+                string AuthorLastName = LastNameAuthorText.Text;
+                string Title = TitleText.Text;
+                var Author = AuthorList.FirstOrDefault(a => a.FirstName == AuthorFirstName);
+                decimal Price = PriceText.Text.Length;               
+                string Language = LanguageText.Text;
+                string ISBN = ISBNText.Text;
                 DateTime PublicationDate = DateTime.Now;
+                int Quantity = QuantityText.Text.Length;
 
                 var newBook = new Book()
                 {
-                    Authors = new Author(),
+                    Authors = new Author { FirstName = AuthorFirstName, LastName = AuthorLastName},
                     Title = Title,
                     Language = Language,
                     Price = Price,
@@ -71,13 +78,13 @@ namespace BokHandelDBLabb2
                 {
                     Isbn = newBook.Isbn,
                     StoreId = CurrentStore.StoreId,
-                    Quantity = 1
+                    Quantity = Quantity
                 };
 
                 await DBConText.Books.AddAsync(newBook);
                 await DBConText.InventoryBalances.AddAsync(newInventoryBalance);
             }
-            
+
             await DBConText.SaveChangesAsync();
         }
 
